@@ -38,6 +38,7 @@ var pagestack = require('pagestack');
 var qs = require('querystring');
 var tester = require('tester');
 var utils = require('utils');
+var system = require('system');
 var f = utils.format;
 
 
@@ -224,6 +225,26 @@ var Casper = function Casper(options) {
 
 // Casper class is an EventEmitter
 utils.inherits(Casper, events.EventEmitter);
+
+/**
+ * Ask for a user input and returns the actual input.
+ *
+ * @param  String promptMsg The message to display in the console
+ * @return String           The input entered by the user
+ */
+Casper.prototype.ask = function ask(promptMsg) {
+    "use strict";
+    this.checkStarted();
+
+    if (!utils.isString(promptMsg) || promptMsg === "") {
+        throw new CasperError("ask() only accepts not-empty string as prompt message");
+    }
+    
+    system.stdout.write(promptMsg);
+    var userInput = system.stdin.readLine();
+
+    return userInput;
+};
 
 /**
  * Go a step back in browser's history
